@@ -1,5 +1,6 @@
 autoload/
 plugged/
+sessions
 
 ######################
 # OS generated files #
