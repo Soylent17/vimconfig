@@ -24,11 +24,17 @@ syntax on
 colorscheme monokai_cy
 set t_Co=256  " vim-monokai now only support 256 colours in terminal.
 let mapleader = ','
-map <C-n> :NERDTreeToggle<CR>
 map <C-p> :tabfind 
-map <C-o> :tabe
+map <C-n> :tabe
 
+" == NERDCommenter ==
 let g:NERDSpaceDelims = 1
 let g:NERDDefaultAlign = 'left'
 let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
+
+" == NERDTree ==
+map <C-o> :NERDTreeToggle<CR>
+let NERDTreeShowBookmarks=1
+
+cd ~/sites/ouj.ocp.org
