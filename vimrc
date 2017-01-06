@@ -7,6 +7,8 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'jwalton512/vim-blade'
 Plug 'xolox/vim-misc'    " Required for vim-session
 Plug 'xolox/vim-session' " Better session handling
+Plug 'mkitt/tabline.vim' " make tabs prettier
+"Plug 'ctrlpvim/ctrlp.vim'
 
 " PlugInstall [name ...] [#threads]    Install plugins
 " PlugUpdate [name ...] [#threads]    Install or update plugins
@@ -41,11 +43,13 @@ hi LineNr       ctermfg=075  ctermbg=237  cterm=NONE guifg=#90908a guibg=#3c3d37
 " ---- /COLOR SCHEME ---- "
 
 " ---- KEY BINDINGS ---- "
-map <C-f> :find
+map <C-f> :find 
 map <C-p> :tabfind 
-map <C-n> :tabe
+map <C-n> :tabe 
 map <F2> i<CR><ESC>
-map <C-o> :NERDTreeToggle<CR>
+"map <C-o> :NERDTreeToggle<CR>
+map <C-o> :NERDTreeFind<CR>
+map ff <C-w>gf
 " ---- /KEY BINDINGS ---- "
 
 let mapleader = ','
@@ -60,6 +64,11 @@ let g:NERDTrimTrailingWhitespace = 1
 " ---- NERDTREE ---- "
 let NERDTreeShowBookmarks=1
 " ---- /NERDTREE ---- "
+
+" ---- EASYALIGN ---- "
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+" ---- /EASYALIGN ---- "
 
 " ---- CAPSLOCK ---- "
 " Use CTRL-^ instead of CAPSLOCK
@@ -83,6 +92,19 @@ function! sesh:Open()
 endfunction
 " ---- /SESSIONS ---- "
 
+command! Vimrc call vimrc:Open()
+command! Vimrc call :tabe ~/.vim/vimrc
+function! sesh:Open()
+    let bnr = bufwinnr(a:buffername)
+    if bnr > 0
+       :exe bnr . "wincmd w"
+    else
+       echo a:buffername . ' is not existent'
+       silent execute 'split ' . a:buffername
+    endif
+
+endfunction
+
 " ---- ETABS ---- "
 " ## open multiple files in tabs from within vim ## "
 command! -complete=file -nargs=+ Etabs call s:ETW('tabnew', <f-args>)
@@ -103,4 +125,9 @@ function! s:ETW(what, ...)
 endfunction
 " ---- /ETABS ---- "
 
-" cd ~/sites/ouj.ocp.org
+let $hostname = substitute(system('hostname'), '\n', '', '')
+" OCP settings
+if $hostname == 'dragon.ocp.org'
+    cd ~/sites/ouj.ocp.org
+    set path=.,./**,$PWD/app/Http/Controllers/**,$PWD/resources/**,$PWD/config/**,$PWD/public/**,$PWD/app/**,$PWD,$PWD/vendor/oregoncatholicpress/**,,**,~,~/**
+endif
