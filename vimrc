@@ -68,6 +68,8 @@ let NERDTreeShowBookmarks=1
 " ---- EASYALIGN ---- "
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
+xmap gaa <Plug>(EasyAlign)=
+nmap gaa <Plug>(EasyAlign)=
 " ---- /EASYALIGN ---- "
 
 " ---- CAPSLOCK ---- "
@@ -86,24 +88,21 @@ let g:session_autoload='no'
 " command to reopen last session @requires xolox/vim-session
 command! Sesh call sesh:Open()
 function! sesh:Open()
+    if empty(glob(g:session_directory . '/lastsession.vim'))
+        SaveSession lastsession
+    endif
     OpenSession lastsession
     let g:session_autosave_periodic=5
     let g:session_autosave='yes'
 endfunction
 " ---- /SESSIONS ---- "
 
+" ---- SHORTCUT TO OPEN VIMRC ---- "
 command! Vimrc call vimrc:Open()
-command! Vimrc call :tabe ~/.vim/vimrc
-function! sesh:Open()
-    let bnr = bufwinnr(a:buffername)
-    if bnr > 0
-       :exe bnr . "wincmd w"
-    else
-       echo a:buffername . ' is not existent'
-       silent execute 'split ' . a:buffername
-    endif
-
+function! vimrc:Open()
+    :tabe ~/.vim/vimrc
 endfunction
+" ---- /SHORTCUT TO OPEN VIMRC ---- "
 
 " ---- ETABS ---- "
 " ## open multiple files in tabs from within vim ## "
@@ -125,9 +124,25 @@ function! s:ETW(what, ...)
 endfunction
 " ---- /ETABS ---- "
 
+" ---- WIPE HIDDEN BUFFERS ---- "
+command! Bwh call DeleteHiddenBuffers()
+function DeleteHiddenBuffers()
+    let tpbl=[]
+    call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
+    for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
+        silent execute 'bwipeout' buf
+    endfor
+endfunction
+" ---- /WIPE HIDDEN BUFFERS ---- "
+
 let $hostname = substitute(system('hostname'), '\n', '', '')
 " OCP settings
 if $hostname == 'dragon.ocp.org'
-    cd ~/sites/ouj.ocp.org
-    set path=.,./**,$PWD/app/Http/Controllers/**,$PWD/resources/**,$PWD/config/**,$PWD/public/**,$PWD/app/**,$PWD,$PWD/vendor/oregoncatholicpress/**,,**,~,~/**
+    " let choice = confirm('ouj or lit?', '&ouj\n&lit')
+    " if choice == 1
+    "     cd ~/sites/ouj.ocp.org
+    " elseif choice == 2
+    "     cd ~/sites/liturgy.com
+    " endif
+    set path=.,./app/Http/Controllers/**,./resources/**,./config/**,./public/**,./app/**,./vendor/oregoncatholicpress/**,./**,**,~,~/**
 endif
