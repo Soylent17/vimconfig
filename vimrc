@@ -50,7 +50,7 @@ map <F2> i<CR><ESC>
 "map <C-o> :NERDTreeToggle<CR>
 map <C-o> :NERDTreeFind<CR>
 map ff <C-w>gf
-map o o<ESC>
+map oo o<ESC>
 " ---- /KEY BINDINGS ---- "
 
 let mapleader = ','
