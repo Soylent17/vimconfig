@@ -50,6 +50,7 @@ map <F2> i<CR><ESC>
 "map <C-o> :NERDTreeToggle<CR>
 map <C-o> :NERDTreeFind<CR>
 map ff <C-w>gf
+map o o<ESC>
 " ---- /KEY BINDINGS ---- "
 
 let mapleader = ','
@@ -126,7 +127,7 @@ endfunction
 
 " ---- WIPE HIDDEN BUFFERS ---- "
 command! Bwh call DeleteHiddenBuffers()
-function DeleteHiddenBuffers()
+function! DeleteHiddenBuffers()
     let tpbl=[]
     call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
     for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
