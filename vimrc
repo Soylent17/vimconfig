@@ -49,11 +49,10 @@ map <C-f> :find
 map <C-p> :tabfind 
 map <C-n> :tabe 
 map <F2> i<CR><ESC>
+map <F3> o<ESC>
 "map <C-o> :NERDTreeToggle<CR>
 map <C-o> :NERDTreeFind<CR>
 map ff <C-w>gf
-map oo o<ESC>
-map ooo i<CR><ESC>
 " ---- /KEY BINDINGS ---- "
 
 let mapleader = ','
@@ -93,8 +92,6 @@ let g:session_autoload='no'
 command! -nargs=* Sesh call sesh:Open(<f-args>)
 function! sesh:Open(...)
     let l:which = 'lastsession'.((a:0 > 0) ? a:1 : '1')
-    echo l:which
-    return
     if empty(glob(g:session_directory . '/'.l:which.'.vim'))
         execute 'SaveSession ' . l:which
     endif
