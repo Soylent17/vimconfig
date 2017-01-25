@@ -1,5 +1,7 @@
 " Lots of options; @see https://github.com/junegunn/vim-plug
-call plug#begin('~/.vim/plugged')
+let $VIMPATH=expand('<sfile>:p:h')
+let $HOMEPATH=expand('~/')
+call plug#begin($VIMPATH.'/plugged')
 
 Plug 'junegunn/vim-easy-align'
 Plug 'scrooloose/nerdtree'
@@ -51,6 +53,7 @@ map <F2> i<CR><ESC>
 map <C-o> :NERDTreeFind<CR>
 map ff <C-w>gf
 map oo o<ESC>
+map ooo i<CR><ESC>
 " ---- /KEY BINDINGS ---- "
 
 let mapleader = ','
@@ -87,12 +90,15 @@ autocmd InsertLeave * set iminsert=0
 " ---- SESSIONS ---- "
 let g:session_autoload='no'
 " command to reopen last session @requires xolox/vim-session
-command! Sesh call sesh:Open()
-function! sesh:Open()
-    if empty(glob(g:session_directory . '/lastsession.vim'))
-        SaveSession lastsession
+command! -nargs=* Sesh call sesh:Open(<f-args>)
+function! sesh:Open(...)
+    let l:which = 'lastsession'.((a:0 > 0) ? a:1 : '1')
+    echo l:which
+    return
+    if empty(glob(g:session_directory . '/'.l:which.'.vim'))
+        execute 'SaveSession ' . l:which
     endif
-    OpenSession lastsession
+    execute 'OpenSession ' . l:which
     let g:session_autosave_periodic=5
     let g:session_autosave='yes'
 endfunction
@@ -101,7 +107,14 @@ endfunction
 " ---- SHORTCUT TO OPEN VIMRC ---- "
 command! Vimrc call vimrc:Open()
 function! vimrc:Open()
-    :tabe ~/.vim/vimrc
+    :tabe $VIMPATH/vimrc
+endfunction
+" ---- /SHORTCUT TO OPEN VIMRC ---- "
+
+" ---- SHORTCUT TO OPEN BASHRC---- "
+command! Bashrc call bashrc:Open()
+function! bashrc:Open()
+    :tabe $HOMEPATH/.bashrc
 endfunction
 " ---- /SHORTCUT TO OPEN VIMRC ---- "
 
@@ -139,11 +152,17 @@ endfunction
 let $hostname = substitute(system('hostname'), '\n', '', '')
 " OCP settings
 if $hostname == 'dragon.ocp.org'
+    command! OUJ :cd $HOMEPATH/sites/ouj.ocp.org
+    command! LIT :cd $HOMEPATH/sites/liturgy.com
+    command! OCP :cd vendor/oregoncatholicpress
+    command! CMS :cd vendor/oregoncatholicpress/cms
+    command! IZR :cd vendor/oregoncatholicpress/izzyresource
+    command! REP :cd vendor/oregoncatholicpress/reports
     " let choice = confirm('ouj or lit?', '&ouj\n&lit')
     " if choice == 1
-    "     cd ~/sites/ouj.ocp.org
+    "     cd $HOMEPATH/sites/ouj.ocp.org
     " elseif choice == 2
-    "     cd ~/sites/liturgy.com
+    "     cd $HOMEPATH/sites/liturgy.com
     " endif
     set path=.,./app/Http/Controllers/**,./resources/**,./config/**,./public/**,./app/**,./vendor/oregoncatholicpress/**,./**,**,~,~/**
 endif
