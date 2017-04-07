@@ -10,6 +10,9 @@ Plug 'jwalton512/vim-blade'
 Plug 'xolox/vim-misc'    " Required for vim-session
 Plug 'xolox/vim-session' " Better session handling
 Plug 'mkitt/tabline.vim' " make tabs prettier
+Plug 'sirver/ultisnips'  " code snippets
+Plug 'honza/vim-snippets' " Snippets are separated from the engine. Add this if you want them:
+
 "Plug 'ctrlpvim/ctrlp.vim'
 
 " PlugInstall [name ...] [#threads]    Install plugins
@@ -33,6 +36,15 @@ set colorcolumn=120
 set ruler
 set number
 set laststatus=2
+
+" ---- ULTISNIPS ---- "
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+" ---- /ULTISNIPS ---- "
 
 " ---- COLOR SCHEME ---- "
 syntax enable
@@ -115,6 +127,13 @@ function! bashrc:Open()
 endfunction
 " ---- /SHORTCUT TO OPEN VIMRC ---- "
 
+" ---- SHORTCUT TO OPEN GREP RESULTS ---- "
+command! Grepl call grepresult:Open()
+function! grepresult:Open()
+    :tabe $HOMEPATH/grep
+endfunction
+" ---- /SHORTCUT TO OPEN GREP RESULTS ---- "
+
 " ---- ETABS ---- "
 " ## open multiple files in tabs from within vim ## "
 command! -complete=file -nargs=+ Etabs call s:ETW('tabnew', <f-args>)
@@ -136,7 +155,9 @@ endfunction
 " ---- /ETABS ---- "
 
 " ---- WIPE HIDDEN BUFFERS ---- "
-command! Bwh call DeleteHiddenBuffers()
+command! BWAH call DeleteHiddenBuffers()
+command! BWA :bufdo! bw
+command! BWQ :w|:bw
 function! DeleteHiddenBuffers()
     let tpbl=[]
     call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
@@ -155,6 +176,7 @@ if $hostname == 'dragon.ocp.org'
     command! CMS :cd vendor/oregoncatholicpress/cms
     command! IZR :cd vendor/oregoncatholicpress/izzyresource
     command! REP :cd vendor/oregoncatholicpress/reports
+    command! SCR :cd $HOMEPATH/sites/scripts
     " let choice = confirm('ouj or lit?', '&ouj\n&lit')
     " if choice == 1
     "     cd $HOMEPATH/sites/ouj.ocp.org
