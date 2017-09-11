@@ -12,6 +12,7 @@ Plug 'xolox/vim-session' " Better session handling
 Plug 'mkitt/tabline.vim' " make tabs prettier
 Plug 'sirver/ultisnips'  " code snippets
 Plug 'honza/vim-snippets' " Snippets are separated from the engine. Add this if you want them:
+Plug 'kshenoy/vim-signature' " Marks highlighting
 
 "Plug 'ctrlpvim/ctrlp.vim'
 
@@ -36,6 +37,7 @@ set colorcolumn=120
 set ruler
 set number
 set laststatus=2
+set confirm         " confirm close when unsaved changes (instead of error)
 
 " ---- ULTISNIPS ---- "
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
@@ -44,6 +46,7 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/UltiSnips']
 " ---- /ULTISNIPS ---- "
 
 " ---- COLOR SCHEME ---- "
@@ -65,6 +68,8 @@ map <F3> o<ESC>
 "map <C-o> :NERDTreeToggle<CR>
 map <C-o> :NERDTreeFind<CR>
 map ff <C-w>gf
+vnoremap // y/<C-R>"<CR>
+map <C-h> :ls<CR>:e #
 " ---- /KEY BINDINGS ---- "
 
 let mapleader = ','
@@ -155,17 +160,25 @@ endfunction
 " ---- /ETABS ---- "
 
 " ---- WIPE HIDDEN BUFFERS ---- "
-command! BWAH call DeleteHiddenBuffers()
-command! BWA :bufdo! bw
-command! BWQ :w|:bw
+command! BDAH call DeleteHiddenBuffers()
+command! BDA :bufdo! bd
+command! BWD :w|:bd
 function! DeleteHiddenBuffers()
     let tpbl=[]
     call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
     for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
-        silent execute 'bwipeout' buf
+        silent execute 'bd' buf
     endfor
 endfunction
 " ---- /WIPE HIDDEN BUFFERS ---- "
+
+" ---- SET PASTE ---- "
+command! SPP :set paste
+command! SPN :set nopaste
+command! SNM :set number
+command! SNN :set nonumber
+" command! NEWPHP :tabnew|:set syntax=php|i <?php
+" ---- /SET PASTE ---- "
 
 let $hostname = substitute(system('hostname'), '\n', '', '')
 " OCP settings
