@@ -11,7 +11,7 @@ Plug 'xolox/vim-misc'    " Required for vim-session
 Plug 'xolox/vim-session' " Better session handling
 Plug 'mkitt/tabline.vim' " make tabs prettier
 Plug 'sirver/ultisnips'  " code snippets
-Plug 'honza/vim-snippets' " Snippets are separated from the engine. Add this if you want them:
+Plug 'honza/vim-snippets' " Snippets are separated from the engine. Add this if you want them
 Plug 'kshenoy/vim-signature' " Marks highlighting
 
 "Plug 'ctrlpvim/ctrlp.vim'
@@ -65,6 +65,8 @@ map <C-p> :tabfind
 map <C-n> :tabe 
 map <F2> i<CR><ESC>
 map <F3> o<ESC>
+map <S-CR> A<br /><CR><ESC>
+map  A<br /><CR><ESC>
 "map <C-o> :NERDTreeToggle<CR>
 map <C-o> :NERDTreeFind<CR>
 map ff <C-w>gf
@@ -139,6 +141,13 @@ function! grepresult:Open()
 endfunction
 " ---- /SHORTCUT TO OPEN GREP RESULTS ---- "
 
+" ---- SHORTCUT TO PSYSH FOR LARAVEL ---- "
+command! Tinker call tinker:Open()
+function! tinker:Open()
+    :!php artisan tinker
+endfunction
+" ---- /SHORTCUT TO OPEN GREP RESULTS ---- "
+
 " ---- ETABS ---- "
 " ## open multiple files in tabs from within vim ## "
 command! -complete=file -nargs=+ Etabs call s:ETW('tabnew', <f-args>)
@@ -185,6 +194,9 @@ let $hostname = substitute(system('hostname'), '\n', '', '')
 if $hostname == 'dragon.ocp.org'
     command! OUJ :cd $HOMEPATH/sites/ouj.ocp.org
     command! LIT :cd $HOMEPATH/sites/liturgy.com
+    command! CYM :cd $HOMEPATH/sites/isidore.ocp.org
+    command! AOC :cd $HOMEPATH/sites/isidore.ocp.org/public/aoc/2017
+    command! AOC6 :cd $HOMEPATH/sites/isidore.ocp.org/public/aoc/2016
     command! OCP :cd vendor/oregoncatholicpress
     command! CMS :cd vendor/oregoncatholicpress/cms
     command! IZR :cd vendor/oregoncatholicpress/izzyresource
