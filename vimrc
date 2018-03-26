@@ -69,7 +69,8 @@ map <S-CR> A<br /><CR><ESC>
 map  A<br /><CR><ESC>
 "map <C-o> :NERDTreeToggle<CR>
 map <C-o> :NERDTreeFind<CR>
-map ff <C-w>gf
+map ff :call CursorFile()<CR>
+map fff <C-w>gF
 vnoremap // y/<C-R>"<CR>
 map <C-h> :ls<CR>:e #
 " ---- /KEY BINDINGS ---- "
@@ -134,8 +135,14 @@ function! bashrc:Open()
 endfunction
 " ---- /SHORTCUT TO OPEN VIMRC ---- "
 
-" ---- SHORTCUT TO OPEN GREP RESULTS ---- "
-command! Grepl call grepresult:Open()
+" ---- SHORTCUTS TO GREP/OPEN GREP RESULTS ---- "
+command! -nargs=+ Grepl call grepresult:Grep(<f-args>)
+function! grepresult:Grep(...)
+    silent execute '!~/s/grep_laravel.sh -s ' . join(a:000, ' ') . ' ' . expand('%:p')
+    call grepresult:Open()
+endfunction
+
+command! Grepo call grepresult:Open()
 function! grepresult:Open()
     :tabe $HOMEPATH/grep
 endfunction
@@ -188,6 +195,47 @@ command! SNM :set number
 command! SNN :set nonumber
 " command! NEWPHP :tabnew|:set syntax=php|i <?php
 " ---- /SET PASTE ---- "
+
+" ---- FIND OPEN TAB  ---- "
+function! CursorFile()
+    let tab = WhichTab(expand("<cfile>"))
+    if tab > 0
+        echo "yep"
+        execute 'normal ' . tab . 'gt'
+    else
+        echo "nope"
+        normal fff
+    endif
+endfunction
+function! WhichTab(filename)
+    " Try to determine whether file is open in any tab.  
+    " Return number of tab it's open in
+    let buffername = bufname(a:filename)
+    if buffername == ""
+        return 0
+    endif
+    let buffernumber = bufnr(buffername)
+
+    " tabdo will loop through pages and leave you on the last one;
+    " this is to make sure we don't leave the current page
+    let currenttab = tabpagenr()
+    let tab_arr = []
+    tabdo let tab_arr += tabpagebuflist()
+
+    " return to current page
+    exec "tabnext ".currenttab
+
+    " Start checking tab numbers for matches
+    let i = 0
+    for tnum in tab_arr
+        let i += 1
+        " echo "tnum: ".tnum." buff: ".buffernumber." i: ".i
+        if tnum == buffernumber
+            return i
+        endif
+    endfor
+endfunction
+" ---- FIND OPEN TAB  ---- "
 
 let $hostname = substitute(system('hostname'), '\n', '', '')
 " OCP settings
