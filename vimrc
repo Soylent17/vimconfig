@@ -1,6 +1,13 @@
 " Lots of options; @see https://github.com/junegunn/vim-plug
 let $VIMPATH=expand('<sfile>:p:h')
 let $HOMEPATH=expand('~/')
+
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 call plug#begin($VIMPATH.'/plugged')
 
 Plug 'junegunn/vim-easy-align'
@@ -109,8 +116,8 @@ autocmd InsertLeave * set iminsert=0
 " ---- SESSIONS ---- "
 let g:session_autoload='no'
 " command to reopen last session @requires xolox/vim-session
-command! -nargs=* Sesh call sesh:Open(<f-args>)
-function! sesh:Open(...)
+command! -nargs=* Sesh call SeshOpen(<f-args>)
+function! SeshOpen(...)
     let l:which = 'lastsession'.((a:0 > 0) ? a:1 : '1')
     if empty(glob(g:session_directory . '/'.l:which.'.vim'))
         execute 'SaveSession ' . l:which
@@ -122,35 +129,35 @@ endfunction
 " ---- /SESSIONS ---- "
 
 " ---- SHORTCUT TO OPEN VIMRC ---- "
-command! Vimrc call vimrc:Open()
-function! vimrc:Open()
+command! Vimrc call VimrcOpen()
+function! VimrcOpen()
     :tabe $VIMPATH/vimrc
 endfunction
 " ---- /SHORTCUT TO OPEN VIMRC ---- "
 
 " ---- SHORTCUT TO OPEN BASHRC---- "
-command! Bashrc call bashrc:Open()
-function! bashrc:Open()
+command! Bashrc call BashrcOpen()
+function! BashrcOpen()
     :tabe $HOMEPATH/.bashrc
 endfunction
 " ---- /SHORTCUT TO OPEN VIMRC ---- "
 
 " ---- SHORTCUTS TO GREP/OPEN GREP RESULTS ---- "
-command! -nargs=+ Grepl call grepresult:Grep(<f-args>)
-function! grepresult:Grep(...)
+command! -nargs=+ Grepl call GrepresultGrep(<f-args>)
+function! GrepresultGrep(...)
     silent execute '!~/s/grep_laravel.sh -s ' . join(a:000, ' ') . ' ' . expand('%:p')
-    call grepresult:Open()
+    call GrepresultOpen()
 endfunction
 
-command! Grepo call grepresult:Open()
-function! grepresult:Open()
+command! Grepo call GrepresultOpen()
+function! GrepresultOpen()
     :tabe $HOMEPATH/grep
 endfunction
 " ---- /SHORTCUT TO OPEN GREP RESULTS ---- "
 
 " ---- SHORTCUT TO PSYSH FOR LARAVEL ---- "
-command! Tinker call tinker:Open()
-function! tinker:Open()
+command! Tinker call TinkerOpen()
+function! TinkerOpen()
     :!php artisan tinker
 endfunction
 " ---- /SHORTCUT TO OPEN GREP RESULTS ---- "
